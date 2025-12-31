@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .container {
+            background: #fff;
+            width: 100%;
+            max-width: 500px;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .done {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        a {
+            text-decoration: none;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+
+        .delete {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Todo List</h1>
+
+    <!-- Add task -->
+    <form method="POST" action="{% url 'add_task' %}">
+        {% csrf_token %}
+        <input type="text" name="title" placeholder="Enter a task" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <!-- Task list -->
+    <ul>
+        {% for task in tasks %}
+        <li>
+            <span class="{% if task.completed %}done{% endif %}">
+                {{ task.title }}
+            </span>
+            <div>
+                <a href="{% url 'toggle_task' task.id %}">
+                    {% if task.completed %}Undo{% else %}Done{% endif %}
+                </a>
+                <a href="{% url 'delete_task' task.id %}" class="delete"
+                   onclick="return confirm('Delete this task?')">
+                    Delete
+                </a>
+            </div>
+        </li>
+        {% empty %}
+        <p>No tasks added yet.</p>
+        {% endfor %}
+    </ul>
+</div>
+
+</body>
+</html>
